@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+<title>李佳乐·2025年度学习报告·探月编程</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap');
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{font-family:'Noto Sans SC',sans-serif;background:#0a0a1a;color:#fff;overflow-x:hidden;}
+
+  /* 全局滚动容器 */
+  .page{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:40px 24px;position:relative;overflow:hidden;}
+
+  /* ===== 封面 ===== */
+  #cover{background:linear-gradient(135deg,#0d0d2b 0%,#1a0533 50%,#0d1f3c 100%);}
+  .stars{position:absolute;inset:0;overflow:hidden;pointer-events:none;}
+  .star{position:absolute;background:#fff;border-radius:50%;animation:twinkle var(--d,3s) infinite alternate;opacity:0;}
+  @keyframes twinkle{0%{opacity:0.1}100%{opacity:0.9}}
+  .cover-logo{font-size:13px;letter-spacing:4px;color:#a78bfa;margin-bottom:32px;text-transform:uppercase;}
+  .cover-name{font-size:52px;font-weight:900;background:linear-gradient(135deg,#c084fc,#818cf8,#38bdf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1.1;text-align:center;}
+  .cover-sub{font-size:18px;color:#94a3b8;margin-top:16px;letter-spacing:2px;}
+  .cover-year{font-size:120px;font-weight:900;color:rgba(129,140,248,0.08);position:absolute;bottom:-10px;left:50%;transform:translateX(-50%);white-space:nowrap;letter-spacing:-4px;}
+  .scroll-hint{position:absolute;bottom:40px;display:flex;flex-direction:column;align-items:center;gap:8px;color:#64748b;font-size:12px;animation:bounce 2s infinite;}
+  @keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(8px)}}
+  .scroll-hint::after{content:'';display:block;width:1px;height:40px;background:linear-gradient(to bottom,#64748b,transparent);}
+
+  /* ===== 通用章节标题 ===== */
+  .section-badge{display:inline-block;background:linear-gradient(135deg,#7c3aed,#2563eb);border-radius:20px;padding:4px 16px;font-size:12px;letter-spacing:2px;margin-bottom:16px;}
+  .section-title{font-size:28px;font-weight:700;text-align:center;margin-bottom:8px;}
+  .section-sub{font-size:14px;color:#94a3b8;text-align:center;margin-bottom:40px;}
+
+  /* ===== 数字卡片 ===== */
+  .stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;width:100%;max-width:420px;}
+  .stat-card{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:24px 16px;text-align:center;backdrop-filter:blur(10px);transition:transform 0.3s;}
+  .stat-card:hover{transform:translateY(-4px);}
+  .stat-card.wide{grid-column:1/-1;}
+  .stat-num{font-size:48px;font-weight:900;line-height:1;}
+  .stat-num.purple{background:linear-gradient(135deg,#c084fc,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+  .stat-num.blue{background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+  .stat-num.green{background:linear-gradient(135deg,#34d399,#38bdf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+  .stat-num.gold{background:linear-gradient(135deg,#fbbf24,#f59e0b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+  .stat-label{font-size:12px;color:#94a3b8;margin-top:8px;letter-spacing:1px;}
+  .stat-unit{font-size:18px;font-weight:400;}
+
+  /* ===== 出勤页 ===== */
+  #attendance{background:linear-gradient(160deg,#0d1f3c 0%,#0a192f 100%);}
+  .attend-ring{position:relative;width:160px;height:160px;margin:0 auto 32px;}
+  .ring-svg{transform:rotate(-90deg);}
+  .ring-text{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+  .ring-pct{font-size:36px;font-weight:900;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+  .ring-label{font-size:11px;color:#94a3b8;}
+
+  /* ===== 专注力页 ===== */
+  #focus{background:linear-gradient(160deg,#1a0533 0%,#0d0d2b 100%);}
+  .progress-bar-wrap{width:100%;max-width:380px;margin:12px 0;}
+  .progress-bar-label{display:flex;justify-content:space-between;font-size:13px;color:#94a3b8;margin-bottom:6px;}
+  .progress-bar-bg{height:10px;background:rgba(255,255,255,0.08);border-radius:99px;overflow:hidden;}
+  .progress-bar-fill{height:100%;border-radius:99px;transition:width 1.5s cubic-bezier(.17,.67,.4,1.1);width:0%;}
+  .bar-purple{background:linear-gradient(90deg,#7c3aed,#c084fc);}
+  .bar-blue{background:linear-gradient(90deg,#2563eb,#38bdf8);}
+  .bar-green{background:linear-gradient(90deg,#059669,#34d399);}
+
+  /* ===== 作业成就页 ===== */
+  #homework{background:linear-gradient(160deg,#0d1430 0%,#0a0a1a 100%);}
+  .grade-wall{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;max-width:380px;margin:0 auto 24px;}
+  .grade-badge{display:inline-flex;align-items:center;justify-content:center;border-radius:12px;font-size:13px;font-weight:700;padding:6px 14px;}
+  .badge-aplus{background:linear-gradient(135deg,#f59e0b,#fbbf24);color:#1a1a1a;}
+  .badge-a{background:linear-gradient(135deg,#818cf8,#c084fc);color:#fff;}
+  .badge-aminus{background:rgba(129,140,248,0.25);color:#a5b4fc;border:1px solid #6366f1;}
+  .badge-b{background:rgba(100,116,139,0.25);color:#94a3b8;border:1px solid #475569;}
+  .rank-badge{background:linear-gradient(135deg,#f59e0b,#ef4444);border-radius:16px;padding:16px 32px;font-size:36px;font-weight:900;display:inline-block;margin:16px 0;}
+
+  /* ===== 成长曲线页 ===== */
+  #growth{background:linear-gradient(160deg,#0a2012 0%,#0a0a1a 100%);}
+  canvas#growthChart{max-width:100%;border-radius:16px;}
+
+  /* ===== 优点改进页 ===== */
+  #review{background:linear-gradient(160deg,#1a0f00 0%,#0a0a1a 100%);}
+  .point-item{background:rgba(255,255,255,0.05);border-left:3px solid #818cf8;border-radius:0 12px 12px 0;padding:14px 16px;margin:10px 0;font-size:14px;line-height:1.8;text-align:left;width:100%;max-width:420px;}
+  .improve-item{background:rgba(251,191,36,0.07);border-left:3px solid #fbbf24;border-radius:0 12px 12px 0;padding:14px 16px;margin:10px 0;font-size:14px;line-height:1.7;text-align:left;width:100%;max-width:420px;color:#fde68a;}
+  .highlight{color:#fbbf24;font-weight:700;}
+
+  /* ===== 续费页 ===== */
+  #renew{background:linear-gradient(160deg,#0d0d2b 0%,#1a0533 100%);}
+  .renew-card{background:rgba(255,255,255,0.05);border:1px solid rgba(129,140,248,0.3);border-radius:24px;padding:32px 24px;max-width:420px;width:100%;text-align:center;}
+  .renew-title{font-size:24px;font-weight:800;margin-bottom:12px;background:linear-gradient(135deg,#c084fc,#38bdf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+  .renew-desc{font-size:14px;color:#94a3b8;line-height:1.9;margin-bottom:24px;}
+  .renew-btn{display:inline-block;background:linear-gradient(135deg,#7c3aed,#2563eb);color:#fff;border-radius:50px;padding:14px 40px;font-size:16px;font-weight:700;letter-spacing:1px;text-decoration:none;margin-top:8px;box-shadow:0 8px 32px rgba(124,58,237,0.4);transition:transform 0.2s;}
+  .renew-btn:active{transform:scale(0.97);}
+  .teacher-info{margin-top:24px;font-size:13px;color:#64748b;}
+
+  /* ===== 数字滚动动画 ===== */
+  .count-up{}
+
+  /* ===== 页面过渡 ===== */
+  .page{opacity:0;transform:translateY(30px);transition:opacity 0.8s ease,transform 0.8s ease;}
+  .page.visible{opacity:1;transform:none;}
+
+  /* wechat safe area */
+  .page{padding-bottom:calc(40px + env(safe-area-inset-bottom));}
+</style>
+</head>
+<body>
+
+<!-- ===== 封面 ===== -->
+<div class="page" id="cover">
+  <div class="stars" id="stars"></div>
+  <div style="position:relative;z-index:1;text-align:center;">
+    <div class="cover-logo">探月编程 · 2025</div>
+    <div class="cover-name">李佳乐</div>
+    <div class="cover-sub">探月进阶课<br>年度学习报告</div>
+    <div style="margin-top:48px;font-size:13px;color:#475569;">由 刘薇 老师专属定制 · 为她骄傲 💜</div>
+  </div>
+  <div class="cover-year">2025</div>
+  <div class="scroll-hint">向下滑动</div>
+</div>
+
+<!-- ===== 第2幕：出勤足迹 ===== -->
+<div class="page" id="attendance">
+  <div class="section-badge">📅 出勤足迹</div>
+  <div class="section-title">每一次到课<br>都算数</div>
+  <div class="section-sub">全年共 38 节课</div>
+
+  <div class="attend-ring">
+    <svg class="ring-svg" width="160" height="160" viewBox="0 0 160 160">
+      <circle cx="80" cy="80" r="64" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="12"/>
+      <circle cx="80" cy="80" r="64" fill="none" stroke="url(#ringGrad)" stroke-width="12"
+        stroke-linecap="round"
+        stroke-dasharray="402.1"
+        stroke-dashoffset="402.1"
+        id="ringCircle"/>
+      <defs>
+        <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="#38bdf8"/>
+          <stop offset="100%" stop-color="#818cf8"/>
+        </linearGradient>
+      </defs>
+    </svg>
+    <div class="ring-text">
+      <div class="ring-pct" id="ringPct">0%</div>
+      <div class="ring-label">到课率</div>
+    </div>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-num purple" id="val-attended">0</div>
+      <div class="stat-label">实际到课</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num blue">38</div>
+      <div class="stat-label">最长连续全勤</div>
+    </div>
+    <div class="stat-card wide">
+      <div class="stat-num green" id="val-hours">0</div>
+      <div class="stat-label">累计有效学习时长（分钟）</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 第3幕：专注力 ===== -->
+<div class="page" id="focus">
+  <div class="section-badge">🎯 专注力分析</div>
+  <div class="section-title">李佳乐的课堂<br>专注度</div>
+  <div class="section-sub">有效观看进度 vs 全班平均</div>
+
+  <div class="progress-bar-wrap">
+    <div class="progress-bar-label"><span>李佳乐</span><span>95%</span></div>
+    <div class="progress-bar-bg"><div class="progress-bar-fill bar-purple" id="bar-self" style="width:0%"></div></div>
+  </div>
+  <div class="progress-bar-wrap">
+    <div class="progress-bar-label"><span>全班平均</span><span>84.9%</span></div>
+    <div class="progress-bar-bg"><div class="progress-bar-fill bar-blue" id="bar-class" style="width:0%"></div></div>
+  </div>
+
+  <div class="stats-grid" style="margin-top:32px;">
+    <div class="stat-card wide">
+      <div class="stat-num purple">95<span class="stat-unit">%</span></div>
+      <div class="stat-label">平均有效观看进度</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num gold">8.4<span class="stat-unit">h</span></div>
+      <div class="stat-label">累计观看时长</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num green">38</div>
+      <div class="stat-label">完成课节数</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 第4幕：作业成就 ===== -->
+<div class="page" id="homework">
+  <div class="section-badge">⭐ 作业成就墙</div>
+  <div class="section-title">看看她有多努力</div>
+  <div class="section-sub">每一个评级都是认真创作的见证</div>
+
+  <div class="grade-wall" id="gradeWall"></div>
+
+  <div class="stats-grid" style="max-width:420px;width:100%;">
+    <div class="stat-card">
+      <div class="stat-num gold" id="val-aplus">0</div>
+      <div class="stat-label">A+ 作品数</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num purple" id="val-score">0</div>
+      <div class="stat-label">累计积分</div>
+    </div>
+    <div class="stat-card wide">
+      <div style="font-size:13px;color:#94a3b8;margin-bottom:8px;">全班积分排名</div>
+      <div class="rank-badge">第 19 名</div>
+      <div style="font-size:12px;color:#64748b;">共 24 位同学</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 第5幕：成长曲线 ===== -->
+<div class="page" id="growth">
+  <div class="section-badge">📈 成长曲线</div>
+  <div class="section-title">她的进步<br>清晰可见</div>
+  <div class="section-sub">每节课有效观看进度趋势</div>
+  <canvas id="growthChart" height="220"></canvas>
+</div>
+
+<!-- ===== 第6幕：优点 & 改进 ===== -->
+<div class="page" id="review">
+  <div class="section-badge">💌 老师寄语</div>
+  <div class="section-title">李佳乐，刘薇老师<br>想对你说</div>
+  <div class="section-sub" style="margin-bottom:20px;">闪光点</div>
+  <div class="point-item">📅 <b>全勤达人</b>：李佳乐同学全年到课率高达 100%，几乎从未缺席，这份坚持本身就是最好的品格。</div><div class="point-item">🎯 <b>超级专注</b>：课堂平均有效观看进度 95%，全程高度投入，专注力令人印象深刻！</div><div class="point-item">⭐ <b>闪光时刻</b>：全年有 4 次作品获得 A+ 最高评级，老师看到了你的闪光点！</div><div class="point-item">🔥 <b>最强连续记录</b>：最长连续全勤达 38 次课，这种毅力令人敬佩！</div><div class="point-item">🏆 <b>积分优秀</b>：全年累计 75 积分，持续投入换来了丰厚回报。</div>
+  <div class="section-sub" style="margin-top:28px;margin-bottom:12px;">可以更好的地方</div>
+  <div class="improve-item">• 📌 继续保持：李佳乐各项表现都非常出色！下学期可以尝试挑战难度更高的项目，让自己更上一层楼。</div>
+</div>
+
+<!-- ===== 第7幕：续费引导 ===== -->
+<div class="page" id="renew">
+  <div class="section-badge">🚀 下一站</div>
+  <div class="renew-card">
+    <div class="renew-title">继续她的编程旅程</div>
+    <div class="renew-desc">
+      李佳乐在探月进阶课中展现了出色的逻辑思维与创造力。<br>
+      下一阶段 <b style="color:#c084fc;">「探月·高阶创作营」</b> 已开放报名，
+      将解锁更高阶的算法思想与项目实战，
+      是孩子进入中学前最重要的编程能力跃升窗口。
+    </div>
+    <a class="renew-btn" href="#" onclick="alert('微信联系刘薇老师')">咨询续费详情</a>
+    <div class="teacher-info">📩 微信联系刘薇老师<br>由 刘薇 老师为您专属服务</div>
+  </div>
+</div>
+
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+// ===== 数据 =====
+const ATTEND_RATE = 100.00;
+const ATTENDED = 38;
+const TOTAL_HOURS_MIN = 501;
+const APLUS = 4;
+const TOTAL_SCORE = 75;
+const SELF_PROG = 94.5;
+const courseList = [{"name": "2-极速漂移", "progress": 99.0, "score": 3, "grade": "A-", "attend": true, "date": "2025-10-23"}, {"name": "1-我要上太空", "progress": 100.0, "score": 1, "grade": "", "attend": true, "date": "2025-10-23"}, {"name": "4-失控的机器人", "progress": 99.0, "score": 4, "grade": "A", "attend": true, "date": "2025-10-30"}, {"name": "3-代码迷宫奇遇记", "progress": 99.0, "score": 1, "grade": "", "attend": true, "date": "2025-10-30"}, {"name": "6-健康保卫战", "progress": 100.0, "score": 3, "grade": "A+", "attend": true, "date": "2025-11-06"}, {"name": "5-游乐园大危机", "progress": 100.0, "score": 1, "grade": "", "attend": true, "date": "2025-11-06"}, {"name": "8-阿短寻宝记", "progress": 100.0, "score": 3, "grade": "A", "attend": true, "date": "2025-11-13"}, {"name": "7-颜料大战", "progress": 100.0, "score": 1, "grade": "", "attend": true, "date": "2025-11-13"}, {"name": "10-飞行历险记", "progress": 100.0, "score": 3, "grade": "A-", "attend": true, "date": "2025-11-20"}, {"name": "9-我当列车长", "progress": 100.0, "score": 1, "grade": "", "attend": true, "date": "2025-11-20"}, {"name": "12-恐怖的音乐教室", "progress": 100.0, "score": 3, "grade": "A+", "attend": true, "date": "2025-11-27"}, {"name": "11-防火小卫士", "progress": 100.0, "score": 1, "grade": "", "attend": true, "date": "2025-11-27"}, {"name": "14-神奇玩具厂", "progress": 99.0, "score": 3, "grade": "A+", "attend": true, "date": "2025-12-04"}, {"name": "13-穿越荆棘林", "progress": 96.0, "score": 1, "grade": "", "attend": true, "date": "2025-12-04"}, {"name": "16-魔豆历险记", "progress": 99.0, "score": 3, "grade": "A", "attend": true, "date": "2025-12-11"}, {"name": "15-铁人三项接力赛", "progress": 96.0, "score": 1, "grade": "", "attend": true, "date": "2025-12-11"}, {"name": "18-辛巴达航海记", "progress": 97.0, "score": 3, "grade": "A", "attend": true, "date": "2025-12-18"}, {"name": "17-神笔马良", "progress": 98.0, "score": 1, "grade": "", "attend": true, "date": "2025-12-18"}, {"name": "20-小小雪绒花", "progress": 97.0, "score": 4, "grade": "A+", "attend": true, "date": "2025-12-25"}, {"name": "19-足球小将", "progress": 97.0, "score": 1, "grade": "", "attend": true, "date": "2025-12-25"}, {"name": "22-吹气球大战", "progress": 0, "score": 4, "grade": "A", "attend": true, "date": "2026-01-02"}, {"name": "21-猫鼠游戏", "progress": 0, "score": 1, "grade": "", "attend": true, "date": "2026-01-02"}, {"name": "24-老鼠大转轮", "progress": 99.0, "score": 4, "grade": "A", "attend": true, "date": "2026-01-08"}, {"name": "23-灯谜猜猜猜", "progress": 98.0, "score": 1, "grade": "", "attend": true, "date": "2026-01-08"}, {"name": "26-校园美食失窃案", "progress": 99.0, "score": 3, "grade": "A", "attend": true, "date": "2026-01-16"}, {"name": "25-决战鼠鼠堡", "progress": 107.0, "score": 1, "grade": "", "attend": true, "date": "2026-01-16"}, {"name": "28-西瓜大爆炸", "progress": 96.0, "score": 3, "grade": "A-", "attend": true, "date": "2026-01-24"}, {"name": "27-隐秘的山洞", "progress": 94.0, "score": 1, "grade": "", "attend": true, "date": "2026-01-22"}, {"name": "30-特别的礼物", "progress": 90.0, "score": 3, "grade": "A", "attend": true, "date": "2026-01-29"}, {"name": "29-一百个猫老祖", "progress": 93.0, "score": 1, "grade": "", "attend": true, "date": "2026-01-29"}, {"name": "32-章鱼牌椰汁", "progress": 98.0, "score": 3, "grade": "A", "attend": true, "date": "2026-02-05"}, {"name": "31-青青菜园", "progress": 0, "score": 0, "grade": "", "attend": true, "date": "2026-02-05"}, {"name": "34-气泡鱼的梦想", "progress": 99.0, "score": 3, "grade": "A", "attend": true, "date": "2026-02-12"}, {"name": "33-人鱼的音乐传说", "progress": 100.0, "score": 1, "grade": "", "attend": true, "date": "2026-02-12"}, {"name": "36-玩具生产线", "progress": 93.0, "score": 3, "grade": "A", "attend": true, "date": "2026-02-26"}, {"name": "35-难忘的回忆", "progress": 65.0, "score": 0, "grade": "", "attend": true, "date": "2026-02-26"}, {"name": "38-神奇购物车", "progress": 92.0, "score": 1, "grade": "", "attend": true, "date": "2026-03-05"}, {"name": "37-精灵的试炼", "progress": 10.0, "score": 0, "grade": "", "attend": true, "date": "2026-03-05"}];
+const gradeCounts = {"A": 11, "A-": 3, "A+": 4};
+const NTFY_CHANNEL = "liuwei_tanyue_2025_report";
+const STUDENT_NAME = "李佳乐";
+
+// ===== ntfy.sh 已读追踪 =====
+(function(){
+  try {
+    fetch("https://ntfy.sh/" + NTFY_CHANNEL, {
+      method: "POST",
+      headers: {"Content-Type": "text/plain; charset=utf-8", "Title": "📖 年度报告被打开啦！", "Priority": "default"},
+      body: STUDENT_NAME + " 的家长正在查看年度学习报告 🎉"
+    });
+  } catch(e) {}
+})();
+
+// ===== 星空背景 =====
+(function(){
+  const container = document.getElementById('stars');
+  for(let i=0;i<120;i++){
+    const s=document.createElement('div');
+    s.className='star';
+    const size=Math.random()*3+1;
+    s.style.cssText=`width:${size}px;height:${size}px;top:${Math.random()*100}%;left:${Math.random()*100}%;--d:${2+Math.random()*4}s;animation-delay:${Math.random()*4}s`;
+    container.appendChild(s);
+  }
+})();
+
+// ===== IntersectionObserver 进场动画 =====
+const pages = document.querySelectorAll('.page');
+const io = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      e.target.classList.add('visible');
+      triggerPageAnim(e.target.id);
+    }
+  });
+},{threshold:0.3});
+pages.forEach(p=>io.observe(p));
+
+let triggered = {};
+function triggerPageAnim(id){
+  if(triggered[id]) return;
+  triggered[id]=true;
+
+  if(id==='attendance'){
+    // 环形进度
+    const circle = document.getElementById('ringCircle');
+    const circ = 2*Math.PI*64;
+    const offset = circ*(1-ATTEND_RATE/100);
+    setTimeout(()=>{
+      circle.style.transition='stroke-dashoffset 1.5s cubic-bezier(.17,.67,.4,1.1)';
+      circle.style.strokeDashoffset=offset;
+    },200);
+    countUp('ringPct', 0, Math.round(ATTEND_RATE), 1500, v=>v+'%');
+    countUp('val-attended', 0, ATTENDED, 1200);
+    countUp('val-hours', 0, Math.round(TOTAL_HOURS_MIN), 1500);
+  }
+
+  if(id==='focus'){
+    setTimeout(()=>{
+      document.getElementById('bar-self').style.width=SELF_PROG+'%';
+      document.getElementById('bar-class').style.width='84.9%';
+    },300);
+  }
+
+  if(id==='homework'){
+    // 生成作业等级勋章
+    const wall = document.getElementById('gradeWall');
+    const gradeOrder=['A+','A','A-','B+','B','B-'];
+    const classMap={'A+':'badge-aplus','A':'badge-a','A-':'badge-aminus','B+':'badge-b','B':'badge-b','B-':'badge-b'};
+    gradeOrder.forEach(g=>{
+      if(gradeCounts[g]){
+        const cnt=gradeCounts[g];
+        for(let i=0;i<Math.min(cnt,20);i++){
+          const b=document.createElement('div');
+          b.className='grade-badge '+(classMap[g]||'badge-b');
+          b.textContent=g;
+          b.style.animationDelay=(i*0.04)+'s';
+          b.style.opacity=0;
+          b.style.transform='scale(0.5)';
+          b.style.transition=`opacity 0.3s ${i*0.04}s, transform 0.3s ${i*0.04}s`;
+          wall.appendChild(b);
+          requestAnimationFrame(()=>requestAnimationFrame(()=>{
+            b.style.opacity=1;b.style.transform='scale(1)';
+          }));
+        }
+        if(cnt>20){
+          const more=document.createElement('div');
+          more.className='grade-badge badge-aminus';
+          more.textContent=`+${cnt-20} 个${g}`;
+          wall.appendChild(more);
+        }
+      }
+    });
+    countUp('val-aplus',0,APLUS,1000);
+    countUp('val-score',0,TOTAL_SCORE,1200);
+  }
+
+  if(id==='growth'){
+    renderChart();
+  }
+}
+
+// ===== 数字滚动 =====
+function countUp(id, from, to, duration, fmt){
+  const el=document.getElementById(id);
+  if(!el)return;
+  fmt=fmt||(v=>v);
+  const start=performance.now();
+  function step(now){
+    const p=Math.min((now-start)/duration,1);
+    const ease=1-Math.pow(1-p,3);
+    el.textContent=fmt(Math.round(from+(to-from)*ease));
+    if(p<1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+
+// ===== 成长曲线图表 =====
+function renderChart(){
+  const labels=courseList.map(c=>c.name.split('-')[0]);
+  const progData=courseList.map(c=>c.progress);
+  const ctx=document.getElementById('growthChart').getContext('2d');
+  new Chart(ctx,{
+    type:'line',
+    data:{
+      labels,
+      datasets:[{
+        label:'有效观看进度%',
+        data:progData,
+        borderColor:'rgba(129,140,248,0.9)',
+        backgroundColor:'rgba(129,140,248,0.1)',
+        fill:true,
+        tension:0.4,
+        pointBackgroundColor:progData.map(v=>v>=90?'#fbbf24':v>=75?'#818cf8':'#64748b'),
+        pointRadius:4,
+        pointHoverRadius:7,
+      }]
+    },
+    options:{
+      responsive:true,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>ctx.parsed.y+'%'}}},
+      scales:{
+        x:{ticks:{color:'#64748b',font:{size:10},maxTicksLimit:10},grid:{color:'rgba(255,255,255,0.04)'}},
+        y:{min:0,max:100,ticks:{color:'#64748b',callback:v=>v+'%'},grid:{color:'rgba(255,255,255,0.06)'}}
+      }
+    }
+  });
+}
+</script>
+</body>
+</html>
