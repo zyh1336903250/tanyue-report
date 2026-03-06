@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <title>叶新健·2025年度学习报告·探月编程</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@300;400;500;600;700;800&family=PingFang+SC:wght@300;400;500;600;800&display=swap');
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "PingFang SC", "Helvetica Neue", sans-serif;
+      background: #f5f5f7;
+      color: #1d1d1f;
+      overflow-x: hidden;
+    }
+
+    /* 动态特效背景（温柔粉蓝色调） */
+    .ambient-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: -1;
+      overflow: hidden;
+      pointer-events: none;
+      background: #F7F9FC;
+    }
+
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(100px);
+      opacity: 0.7;
+      animation: float 15s infinite ease-in-out alternate;
+    }
+
+    .orb-1 {
+      top: -10%;
+      left: -10%;
+      width: 65vw;
+      height: 65vw;
+      background: rgba(255, 235, 194, 0.6);
+      animation-delay: 0s;
+    }
+
+    .orb-2 {
+      bottom: -10%;
+      right: -10%;
+      width: 75vw;
+      height: 75vw;
+      background: rgba(216, 238, 255, 0.5);
+      animation-delay: -5s;
+    }
+
+    .orb-3 {
+      top: 40%;
+      left: 30%;
+      width: 55vw;
+      height: 55vw;
+      background: rgba(255, 222, 233, 0.5);
+      animation-delay: -2s;
+    }
+
+    @keyframes float {
+      0% {
+        transform: translate(0, 0) scale(1);
+      }
+
+      100% {
+        transform: translate(25px, -35px) scale(1.08);
+      }
+    }
+
+    /* 全局容器 */
+    .page {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 50px 24px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* 初高阶少儿毛玻璃卡片统一样式 */
+    .glass-card,
+    .stat-card,
+    .chart-container,
+    .msg-card {
+      background: rgba(255, 255, 255, 0.9);
+      border: 3px solid #FFFFFF;
+      border-radius: 36px;
+      box-shadow: 0 16px 40px rgba(114, 153, 255, 0.08), 0 4px 12px rgba(0, 0, 0, 0.02);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+    }
+
+    /* ===== 封面 ===== */
+    #cover {
+      align-items: center;
+      text-align: center;
+      justify-content: center;
+    }
+
+    .cover-logo {
+      font-size: 16px;
+      letter-spacing: 2px;
+      color: #4A90E2;
+      margin-bottom: 30px;
+      background: rgba(74, 144, 226, 0.1);
+      padding: 8px 24px;
+      border-radius: 30px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .cover-name-wrap {
+      position: relative;
+      display: inline-block;
+    }
+
+    .cover-name {
+      font-size: 68px;
+      font-weight: 900;
+      color: #FF6B6B;
+      line-height: 1.2;
+      letter-spacing: 2px;
+      position: relative;
+      z-index: 2;
+      text-shadow: 0 8px 20px rgba(255, 107, 107, 0.2);
+    }
+
+    .cover-sub {
+      font-size: 22px;
+      color: #5C6E85;
+      margin-top: 20px;
+      letter-spacing: 1px;
+      font-weight: 700;
+    }
+
+    .cover-year {
+      position: absolute;
+      top: 6vh;
+      left: -8vw;
+      font-size: 160px;
+      font-weight: 900;
+      color: rgba(74, 144, 226, 0.04);
+      line-height: 1;
+      letter-spacing: -6px;
+      user-select: none;
+      z-index: 0;
+    }
+
+    /* 滑动提示 */
+    .scroll-hint {
+      position: absolute;
+      bottom: 48px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      color: #86868b;
+      font-size: 12px;
+      letter-spacing: 1px;
+      animation: bounce 2.5s infinite cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .mouse-icon {
+      width: 24px;
+      height: 36px;
+      border: 3px solid rgba(92, 110, 133, 0.3);
+      border-radius: 14px;
+      position: relative;
+    }
+
+    .mouse-wheel {
+      position: absolute;
+      top: 6px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 4px;
+      height: 8px;
+      background: #5C6E85;
+      border-radius: 2px;
+      animation: scrollWheel 2s infinite;
+    }
+
+    @keyframes bounce {
+
+      0%,
+      100% {
+        transform: translateY(0)
+      }
+
+      50% {
+        transform: translateY(10px)
+      }
+    }
+
+    @keyframes scrollWheel {
+      0% {
+        transform: translate(-50%, 0);
+        opacity: 1;
+      }
+
+      100% {
+        transform: translate(-50%, 8px);
+        opacity: 0;
+      }
+    }
+
+    /* ===== 章节通用 ===== */
+    .section-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #FFFFFF;
+      border: 2px solid #E6F0FA;
+      border-radius: 30px;
+      padding: 8px 24px;
+      font-size: 15px;
+      color: #4A90E2;
+      font-weight: 800;
+      margin-bottom: 24px;
+      box-shadow: 0 4px 12px rgba(74, 144, 226, 0.1);
+    }
+
+    .section-title {
+      font-size: 34px;
+      font-weight: 900;
+      text-align: center;
+      line-height: 1.35;
+      margin-bottom: 12px;
+      letter-spacing: 0.5px;
+      color: #2D3A4A;
+    }
+
+    .section-sub {
+      font-size: 16px;
+      color: #8C9BAB;
+      text-align: center;
+      margin-bottom: 48px;
+      font-weight: 600;
+    }
+
+    /* ===== 数据统计网格 ===== */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      width: 100%;
+      max-width: 400px;
+    }
+
+    .stat-card {
+      padding: 28px 20px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stat-card.wide {
+      grid-column: 1 / -1;
+      flex-direction: row;
+      justify-content: space-between;
+      padding: 24px 32px;
+      text-align: left;
+    }
+
+    .stat-num {
+      font-size: 42px;
+      font-weight: 800;
+      line-height: 1;
+      margin-bottom: 8px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .stat-card.wide .stat-num {
+      margin-bottom: 0;
+      font-size: 46px;
+    }
+
+    .text-gradient-purple {
+      background: linear-gradient(135deg, #B57BFF, #8E54E9);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .text-gradient-blue {
+      background: linear-gradient(135deg, #5AB9FE, #268FFF);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .text-gradient-green {
+      background: linear-gradient(135deg, #42E695, #1DB06D);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .text-gradient-gold {
+      background: linear-gradient(135deg, #FFD25B, #FF9C2A);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .text-gradient-pink {
+      background: linear-gradient(135deg, #FF8EA5, #FF5B7A);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .stat-label {
+      font-size: 14px;
+      color: #8C9BAB;
+      font-weight: 600;
+    }
+
+    .stat-card.wide .stat-label {
+      font-size: 15px;
+      width: 50%;
+    }
+
+    .stat-unit {
+      font-size: 18px;
+      font-weight: 700;
+      margin-left: 2px;
+      color: #2D3A4A;
+    }
+
+    /* ===== 出勤环形图 ===== */
+    .attend-ring-wrap {
+      position: relative;
+      width: 220px;
+      height: 220px;
+      margin: 0 auto 40px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .ring-svg {
+      transform: rotate(-90deg);
+      filter: drop-shadow(0 12px 24px rgba(66, 230, 149, 0.25));
+    }
+
+    .ring-text {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .ring-pct {
+      font-size: 52px;
+      font-weight: 900;
+      background: linear-gradient(135deg, #42E695, #1DB06D);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .ring-label {
+      font-size: 14px;
+      color: #8C9BAB;
+      letter-spacing: 2px;
+      margin-top: 4px;
+      font-weight: 700;
+    }
+
+    .ring-bg {
+      stroke: rgba(66, 230, 149, 0.1);
+    }
+
+    /* ===== 专注力条 ===== */
+    .progress-section {
+      width: 100%;
+      max-width: 400px;
+      margin-bottom: 40px;
+    }
+
+    .progress-wrap {
+      margin-bottom: 24px;
+    }
+
+    .progress-label {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 10px;
+      font-size: 15px;
+      color: #2D3A4A;
+      font-weight: 700;
+    }
+
+    .progress-val {
+      font-size: 22px;
+      font-weight: 900;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .progress-track {
+      height: 16px;
+      background: rgba(0, 0, 0, 0.04);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02);
+    }
+
+    .progress-fill {
+      height: 100%;
+      border-radius: 12px;
+      width: 0;
+      transition: width 1.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+      position: relative;
+    }
+
+    .bar-purple {
+      background: linear-gradient(90deg, #B57BFF, #8E54E9);
+    }
+
+    .bar-green {
+      background: linear-gradient(90deg, #42E695, #1DB06D);
+    }
+
+    /* ===== 作业成就勋章墙 ===== */
+    .grade-wall {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      max-width: 380px;
+      margin: 0 auto 32px;
+    }
+
+    .grade-badge {
+      width: 46px;
+      height: 46px;
+      border-radius: 14px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 18px;
+      font-weight: 800;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    .badge-aplus {
+      background: linear-gradient(135deg, #FF9500, #FF2D55);
+      color: #fff;
+      box-shadow: 0 4px 12px rgba(255, 45, 85, 0.3);
+    }
+
+    .badge-a {
+      background: linear-gradient(135deg, #5E5CE6, #AF52DE);
+      color: #fff;
+      box-shadow: 0 4px 12px rgba(175, 82, 222, 0.3);
+    }
+
+    .badge-aminus {
+      background: linear-gradient(135deg, #32ADE6, #007AFF);
+      color: #fff;
+    }
+
+    .badge-b {
+      background: rgba(0, 0, 0, 0.05);
+      color: #86868b;
+    }
+
+    /* ===== 图表区域 ===== */
+    .chart-container {
+      width: 100%;
+      max-width: 420px;
+      padding: 20px 10px;
+      margin-top: 10px;
+    }
+
+    canvas#growthChart {
+      width: 100% !important;
+      height: auto;
+    }
+
+    /* ===== 老师寄语列表 ===== */
+    .review-list {
+      width: 100%;
+      max-width: 420px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .msg-card {
+      padding: 24px;
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+      transform-origin: left center;
+      transition: transform 0.3s;
+    }
+
+    .msg-card:hover {
+      transform: translateX(8px) scale(1.02);
+      box-shadow: 0 20px 40px rgba(114, 153, 255, 0.12);
+    }
+
+    .msg-icon {
+      font-size: 24px;
+      background: rgba(38, 143, 255, 0.1);
+      color: #268FFF;
+      width: 48px;
+      height: 48px;
+      border-radius: 16px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-shrink: 0;
+    }
+
+    .msg-card.yellow .msg-icon {
+      background: rgba(255, 156, 42, 0.1);
+      color: #FF9C2A;
+    }
+
+    .msg-content {
+      font-size: 16px;
+      line-height: 1.7;
+      color: #2D3A4A;
+      flex: 1;
+      font-weight: 600;
+    }
+
+    .highlight {
+      color: #268FFF;
+      font-weight: 800;
+      font-size: 18px;
+      background: linear-gradient(120deg, rgba(89, 185, 254, 0.3) 0%, transparent 100%);
+      padding: 0 4px;
+      border-radius: 4px;
+    }
+
+    /* ===== 笔记打卡墙 ===== */
+    .video-wall {
+      width: 100vw;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      display: flex;
+      gap: 16px;
+      padding: 0 24px 30px 24px;
+      margin-top: 10px;
+      scrollbar-width: none;
+      /* Firefox */
+    }
+
+    .video-wall::-webkit-scrollbar {
+      display: none;
+      /* Chrome/Safari */
+    }
+
+    .video-card {
+      scroll-snap-align: center;
+      flex: 0 0 240px;
+      height: 420px;
+      border-radius: 28px;
+      background: rgba(255, 255, 255, 0.9);
+      border: 4px solid #fff;
+      box-shadow: 0 16px 40px rgba(114, 153, 255, 0.12), 0 4px 12px rgba(0, 0, 0, 0.03);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .video-card video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      background: #E6F0FA;
+    }
+
+    .video-tag {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: 800;
+      color: #4A90E2;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- 动态全局背景 -->
+  <div class="ambient-bg">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+  </div>
+
+  <!-- ===== 第1幕：封面 ===== -->
+  <div class="page" id="cover">
+    <div class="cover-logo">探月编程 · 2025</div>
+    <div class="cover-name-wrap">
+      <div class="cover-name">叶新健</div>
+    </div>
+    <div class="cover-sub">探月进阶课 年度学习报告</div>
+    <div
+      style="margin-top:60px; font-size:16px; color:#86868b; display:flex; align-items:center; gap:8px; font-weight:700;">
+      <span>刘薇 老师的</span>
+      <span style="color:#FF9500; font-size:24px;">✦</span>
+      <span>年度赞助</span>
+    </div>
+    <div class="cover-year">2025</div>
+
+    <div class="scroll-hint">
+      <span>向下滑动</span>
+    </div>
+  </div>
+
+  <!-- ===== 第2幕：出勤足迹 ===== -->
+  <div class="page" id="attendance">
+    <div class="section-badge"><span>📅</span> 出勤数据</div>
+    <div class="section-title">每一次到课<br>都算数</div>
+    <div class="section-sub">全年共开设 38 节课</div>
+
+    <div class="attend-ring-wrap">
+      <svg class="ring-svg" width="180" height="180" viewBox="0 0 180 180">
+        <circle cx="90" cy="90" r="76" fill="none" class="ring-bg" stroke-width="12" />
+        <circle cx="90" cy="90" r="76" fill="none" stroke="url(#ringGrad)" stroke-width="12" stroke-linecap="round"
+          stroke-dasharray="477.5" stroke-dashoffset="477.5" id="ringCircle" />
+        <defs>
+          <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#42E695" />
+            <stop offset="100%" stop-color="#1DB06D" />
+          </linearGradient>
+        </defs>
+      </svg>
+      <div class="ring-text">
+        <div class="ring-pct"><span id="ringPct">0</span>%</div>
+        <div class="ring-label">到课率</div>
+      </div>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-num text-gradient-purple" id="val-attended">0</div>
+        <div class="stat-label">全勤达成率</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num text-gradient-blue">38</div>
+        <div class="stat-label">最长连勤次</div>
+      </div>
+      <div class="stat-card wide">
+        <div class="stat-num text-gradient-green"><span id="val-hours">0</span><span class="stat-unit">h</span></div>
+        <div class="stat-label">累计有效学习时长，每一分钟都在进步</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== 第3幕：专注力 ===== -->
+  <div class="page" id="focus">
+    <div class="section-badge"><span>🎯</span> 课堂专注度</div>
+    <div class="section-title">叶新健的每一分钟<br>都没有浪费</div>
+    <div class="section-sub">全网课在线学习状态分析</div>
+
+    <div class="progress-section">
+      <div class="progress-wrap">
+        <div class="progress-label"><span>有效观看进度</span><span class="progress-val text-gradient-purple">96%</span></div>
+        <div class="progress-track">
+          <div class="progress-fill bar-purple" id="bar-self"></div>
+        </div>
+      </div>
+      <div class="progress-wrap">
+        <div class="progress-label"><span>课程完成率</span><span class="progress-val text-gradient-green">100%</span></div>
+        <div class="progress-track">
+          <div class="progress-fill bar-green" id="bar-attend"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat-card wide">
+        <div class="stat-num text-gradient-purple">96<span class="stat-unit">%</span></div>
+        <div class="stat-label">全年平均有效观看进度</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== 第4幕：作业成就 ===== -->
+  <div class="page" id="homework">
+    <div class="section-badge"><span>⭐</span> 作品墙</div>
+    <div class="section-title">那些惊艳的<br>代码时刻</div>
+    <div class="section-sub">每一个评级都是闪亮的星星</div>
+
+    <div class="grade-wall" id="gradeWall"></div>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-num text-gradient-gold" id="val-aplus">0</div>
+        <div class="stat-label">A+ 作品数量</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num text-gradient-pink" id="val-score">0</div>
+        <div class="stat-label">累计获得积分</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== 第5幕：成长曲线 ===== -->
+  <div class="page" id="growth">
+    <div class="section-badge"><span>📈</span> 进步轨迹</div>
+    <div class="section-title">他的成长<br>清晰可见</div>
+    <div class="section-sub">历次课程观看进度走势</div>
+    <div class="chart-container">
+      <canvas id="growthChart" height="200"></canvas>
+    </div>
+  </div>
+
+  <!-- ===== 第6幕：笔记打卡（条件渲染） ===== -->
+  <div class="page" id="punch" style="display: flex;">
+    <div class="section-badge"><span>🎬</span> 影像记忆</div>
+    <div class="section-title">你的每一次表达<br>都闪金光</div>
+    <div class="section-sub">年度课后笔记与精彩瞬间回放</div>
+
+    <div class="video-wall" id="videoWall">
+      <!-- 视频将通过 JS 渲染在这里 -->
+    </div>
+  </div>
+
+  <!-- ===== 第7幕：老师寄语 ===== -->
+  <div class="page" id="review">
+    <div class="section-badge"><span>💌</span> 私人信笺</div>
+    <div class="section-title">叶新健同学，<br>你真的很棒！</div>
+    <div class="section-sub" style="margin-bottom:30px;">来自 刘薇 老师的年终寄语</div>
+
+    <div class="review-list">
+      <!-- 组合文案并渲染 -->
+      <div class="msg-card">
+        <div class="msg-icon">✨</div>
+        <div class="msg-content">全年到课率高达 <span class='highlight'>100%</span>，几乎从未缺席一节课！这份坚持，是比任何技能都珍贵的品质。</div>
+      </div>
+      <div class="msg-card">
+        <div class="msg-icon">✨</div>
+        <div class="msg-content">课堂平均有效观看进度高达 <span class='highlight'>96%</span>，全程紧跟老师节奏，这种专注力让学习效率翻倍！</div>
+      </div>
+      <div class="msg-card">
+        <div class="msg-icon">✨</div>
+        <div class="msg-content">全年有 <span class='highlight'>8 件</span>作品获得 A+ 最高评级，创意与完成质量都相当出色！</div>
+      </div>
+      <div class="msg-card">
+        <div class="msg-icon">✨</div>
+        <div class="msg-content">全年超过 15 次作品获得 A 级及以上评价，作品质量保持高水准，非常稳定！</div>
+      </div>
+      <div class="msg-card">
+        <div class="msg-icon">✨</div>
+        <div class="msg-content">最长连续全勤 <span class='highlight'>38 节课</span>，这份坚毅让所有人刮目相看！</div>
+      </div>
+      <div class="msg-card">
+        <div class="msg-icon">✨</div>
+        <div class="msg-content">全年累计获得 <span class='highlight'>95 积分</span>，积极参与课堂互动，成绩亮眼！</div>
+      </div>
+      <div class="msg-card yellow">
+        <div class="msg-icon">🚀</div>
+        <div class="msg-content">叶新健在这一年展现出了很强的学习潜力，下学期老师期待看到更多你的精彩创意作品！</div>
+      </div>
+    </div>
+
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script>
+      // ===== 数据 =====
+      const ATTEND_RATE = 100.00;
+      const ATTENDED = 38;
+      const TOTAL_HOURS_MIN = 519;
+      const APLUS = 8;
+      const TOTAL_SCORE = 95;
+      const SELF_PROG = 95.5;
+      const courseList = [{ "name": "2-极速漂移", "progress": 100.0, "score": 4, "grade": "A-", "attend": true, "date": "2025-10-23" }, { "name": "1-我要上太空", "progress": 100.0, "score": 1, "grade": "", "attend": true, "date": "2025-10-23" }, { "name": "4-失控的机器人", "progress": 91.0, "score": 4, "grade": "A-", "attend": true, "date": "2025-10-30" }, { "name": "3-代码迷宫奇遇记", "progress": 99.0, "score": 1, "grade": "", "attend": true, "date": "2025-10-30" }, { "name": "6-健康保卫战", "progress": 100.0, "score": 4, "grade": "A", "attend": true, "date": "2025-11-06" }, { "name": "5-游乐园大危机", "progress": 100.0, "score": 1, "grade": "", "attend": true, "date": "2025-11-06" }, { "name": "8-阿短寻宝记", "progress": 100.0, "score": 4, "grade": "A", "attend": true, "date": "2025-11-13" }, { "name": "7-颜料大战", "progress": 100.0, "score": 1, "grade": "", "attend": true, "date": "2025-11-13" }, { "name": "10-飞行历险记", "progress": 90.0, "score": 4, "grade": "A+", "attend": true, "date": "2025-11-20" }, { "name": "9-我当列车长", "progress": 100.0, "score": 1, "grade": "", "attend": true, "date": "2025-11-20" }, { "name": "12-恐怖的音乐教室", "progress": 100.0, "score": 4, "grade": "A+", "attend": true, "date": "2025-11-27" }, { "name": "11-防火小卫士", "progress": 100.0, "score": 1, "grade": "", "attend": true, "date": "2025-11-27" }, { "name": "14-神奇玩具厂", "progress": 98.0, "score": 4, "grade": "A+", "attend": true, "date": "2025-12-04" }, { "name": "13-穿越荆棘林", "progress": 96.0, "score": 1, "grade": "", "attend": true, "date": "2025-12-04" }, { "name": "16-魔豆历险记", "progress": 99.0, "score": 4, "grade": "A+", "attend": true, "date": "2025-12-11" }, { "name": "15-铁人三项接力赛", "progress": 95.0, "score": 1, "grade": "", "attend": true, "date": "2025-12-11" }, { "name": "18-辛巴达航海记", "progress": 97.0, "score": 4, "grade": "A", "attend": true, "date": "2025-12-18" }, { "name": "17-神笔马良", "progress": 98.0, "score": 1, "grade": "", "attend": true, "date": "2025-12-18" }, { "name": "20-小小雪绒花", "progress": 95.0, "score": 4, "grade": "A+", "attend": true, "date": "2025-12-25" }, { "name": "19-足球小将", "progress": 88.0, "score": 1, "grade": "", "attend": true, "date": "2025-12-25" }, { "name": "22-吹气球大战", "progress": 0, "score": 4, "grade": "A", "attend": true, "date": "2026-01-02" }, { "name": "21-猫鼠游戏", "progress": 0, "score": 1, "grade": "", "attend": true, "date": "2026-01-02" }, { "name": "24-老鼠大转轮", "progress": 98.0, "score": 4, "grade": "A-", "attend": true, "date": "2026-01-08" }, { "name": "23-灯谜猜猜猜", "progress": 98.0, "score": 1, "grade": "", "attend": true, "date": "2026-01-08" }, { "name": "26-校园美食失窃案", "progress": 99.0, "score": 4, "grade": "A", "attend": true, "date": "2026-01-15" }, { "name": "25-决战鼠鼠堡", "progress": 98.0, "score": 1, "grade": "", "attend": true, "date": "2026-01-15" }, { "name": "28-西瓜大爆炸", "progress": 99.0, "score": 4, "grade": "A+", "attend": true, "date": "2026-01-22" }, { "name": "27-隐秘的山洞", "progress": 99.0, "score": 1, "grade": "", "attend": true, "date": "2026-01-22" }, { "name": "30-特别的礼物", "progress": 97.0, "score": 4, "grade": "A+", "attend": true, "date": "2026-01-29" }, { "name": "29-一百个猫老祖", "progress": 99.0, "score": 1, "grade": "", "attend": true, "date": "2026-01-29" }, { "name": "32-章鱼牌椰汁", "progress": 89.0, "score": 4, "grade": "A-", "attend": true, "date": "2026-02-05" }, { "name": "31-青青菜园", "progress": 79.0, "score": 1, "grade": "", "attend": true, "date": "2026-02-05" }, { "name": "34-气泡鱼的梦想", "progress": 99.0, "score": 4, "grade": "A", "attend": true, "date": "2026-02-12" }, { "name": "33-人鱼的音乐传说", "progress": 100.0, "score": 1, "grade": "", "attend": true, "date": "2026-02-12" }, { "name": "36-玩具生产线", "progress": 74.0, "score": 4, "grade": "A", "attend": true, "date": "2026-02-26" }, { "name": "35-难忘的回忆", "progress": 97.0, "score": 1, "grade": "", "attend": true, "date": "2026-02-26" }, { "name": "38-神奇购物车", "progress": 93.0, "score": 4, "grade": "A+", "attend": true, "date": "2026-03-05" }, { "name": "37-精灵的试炼", "progress": 74.0, "score": 1, "grade": "", "attend": true, "date": "2026-03-05" }];
+      const gradeCounts = { "A+": 8, "A": 7, "A-": 4 };
+      const NTFY_CHANNEL = "liuwei_tanyue_2025_report";
+      const STUDENT_NAME = "叶新健";
+      const punchVideos = [
+        "https://online-education.codemao.cn/350/Video/1772710610709.mp4",
+        "https://online-education.codemao.cn/350/Video/1772109273907.mp4"
+      ]; // 测试预填视频
+
+      // ===== ntfy.sh 已读追踪 =====
+      (function () {
+        try {
+          fetch("https://ntfy.sh/" + NTFY_CHANNEL, {
+            method: "POST",
+            headers: { "Content-Type": "text/plain; charset=utf-8", "Title": "📖 年度报告被打开啦！", "Priority": "default" },
+            body: STUDENT_NAME + " 的家长正在查看年度学习报告 🎉"
+          });
+        } catch (e) { }
+      })();
+
+      // ===== IntersectionObserver 进场动画 =====
+      const pages = document.querySelectorAll('.page');
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+          if (e.isIntersecting) {
+            e.target.classList.add('visible');
+            triggerPageAnim(e.target.id);
+          }
+        });
+      }, { threshold: 0.3 });
+      pages.forEach(p => io.observe(p));
+
+      let triggered = {};
+      function triggerPageAnim(id) {
+        if (triggered[id]) return;
+        triggered[id] = true;
+
+        if (id === 'punch') {
+          // 初始化加载打卡视频
+          const wall = document.getElementById('videoWall');
+          punchVideos.forEach((url, idx) => {
+            const card = document.createElement('div');
+            card.className = 'video-card';
+            card.innerHTML = `
+              <video src="${url}" controls playsinline preload="metadata" poster=""></video>
+              <div class="video-tag">打卡时刻 ${idx + 1}</div>
+            `;
+            // 处理交替进场动画
+            card.style.opacity = 0;
+            card.style.transform = 'translateY(30px)';
+            card.style.transition = `all 0.6s ${idx * 0.15}s cubic-bezier(0.2, 0.8, 0.2, 1)`;
+            wall.appendChild(card);
+
+            requestAnimationFrame(() => requestAnimationFrame(() => {
+              card.style.opacity = 1;
+              card.style.transform = 'translateY(0)';
+            }));
+          });
+        }
+
+        if (id === 'attendance') {
+          // 环形进度
+          const circle = document.getElementById('ringCircle');
+          const circ = 2 * Math.PI * 76;
+          const offset = circ * (1 - ATTEND_RATE / 100);
+          setTimeout(() => {
+            circle.style.transition = 'stroke-dashoffset 1.5s cubic-bezier(0.2,0.8,0.2,1)';
+            circle.style.strokeDashoffset = offset;
+          }, 200);
+          countUp('ringPct', 0, Math.round(ATTEND_RATE), 1500);
+          countUp('val-attended', 0, ATTENDED, 1200);
+          countUp('val-hours', 0, Math.round(TOTAL_HOURS_MIN / 60 * 10) / 10, 1500, v => Math.max(v, 0.1)); // 显示小时
+        }
+
+        if (id === 'focus') {
+          setTimeout(() => {
+            document.getElementById('bar-self').style.width = SELF_PROG + '%';
+            document.getElementById('bar-attend').style.width = ATTEND_RATE + '%';
+          }, 300);
+        }
+
+        if (id === 'homework') {
+          // 生成作业等级勋章
+          const wall = document.getElementById('gradeWall');
+          const gradeOrder = ['A+', 'A', 'A-', 'B+', 'B', 'B-'];
+          const classMap = { 'A+': 'badge-aplus', 'A': 'badge-a', 'A-': 'badge-a', 'B+': 'badge-b', 'B': 'badge-b', 'B-': 'badge-b' };
+          gradeOrder.forEach(g => {
+            if (gradeCounts[g]) {
+              const cnt = gradeCounts[g];
+              let displayG = g === 'A-' ? 'A' : g;
+              for (let i = 0; i < Math.min(cnt, 20); i++) {
+                const b = document.createElement('div');
+                b.className = 'grade-badge ' + (classMap[g] || 'badge-b');
+                b.textContent = displayG;
+                b.style.animationDelay = (i * 0.04) + 's';
+                b.style.opacity = 0;
+                b.style.transform = 'scale(0.5)';
+                b.style.transition = `opacity 0.3s ${i * 0.04}s, transform 0.3s ${i * 0.04}s`;
+                wall.appendChild(b);
+                requestAnimationFrame(() => requestAnimationFrame(() => {
+                  b.style.opacity = 1; b.style.transform = 'scale(1)';
+                }));
+              }
+              if (cnt > 20) {
+                const more = document.createElement('div');
+                more.className = 'grade-badge badge-a';
+                more.textContent = `+${cnt - 20} 个${displayG}`;
+                wall.appendChild(more);
+              }
+            }
+          });
+          countUp('val-aplus', 0, APLUS, 1000);
+          countUp('val-score', 0, TOTAL_SCORE, 1200);
+        }
+
+        if (id === 'growth') {
+          renderChart();
+        }
+      }
+
+      // ===== 数字滚动 =====
+      function countUp(id, from, to, duration, fmt) {
+        const el = document.getElementById(id);
+        if (!el) return;
+        fmt = fmt || (v => v);
+        const start = performance.now();
+        function step(now) {
+          const p = Math.min((now - start) / duration, 1);
+          const ease = 1 - Math.pow(1 - p, 3);
+          el.textContent = fmt(Math.round(from + (to - from) * ease));
+          if (p < 1) requestAnimationFrame(step);
+        }
+        requestAnimationFrame(step);
+      }
+
+      // ===== 成长曲线图表 =====
+      function renderChart() {
+        const labels = courseList.map(c => c.name.split('-')[0]);
+        const progData = courseList.map(c => c.progress);
+        const ctx = document.getElementById('growthChart').getContext('2d');
+        new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels,
+            datasets: [{
+              label: '有效观看进度%',
+              data: progData,
+              borderColor: '#FF9500',
+              backgroundColor: 'rgba(255,149,0,0.15)',
+              fill: true,
+              tension: 0.4,
+              pointBackgroundColor: progData.map(v => v >= 90 ? '#FF3B30' : v >= 75 ? '#FF9500' : '#FFCF00'),
+              pointRadius: 5,
+              pointHoverRadius: 8,
+              borderWidth: 4
+            }]
+          },
+          options: {
+            responsive: true,
+            plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ctx.parsed.y + '%' } } },
+            scales: {
+              x: { ticks: { color: '#86868b', font: { size: 10, family: 'sans-serif', weight: '600' }, maxTicksLimit: 8 }, grid: { display: false } },
+              y: { min: 0, max: 100, ticks: { color: '#86868b', font: { family: 'sans-serif', weight: '600' }, callback: v => v + '%' }, grid: { color: 'rgba(0,0,0,0.05)' } }
+            }
+          }
+        });
+      }
+    </script>
+</body>
+
+</html>
